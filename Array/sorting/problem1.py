@@ -1,54 +1,42 @@
-"""Group Anagrams
+"""
+Anagram Gouping
 
-Problem: Given a list of strings `strs`, group the anagrams together.
-Anagrams are words made of the same letters in a different order.
-Return a list of lists, where each sublist contains words that are anagrams of
-each other.
+Given an array of strings strs, group the anagrams together.
+You can return the answer in any order.
 
 Example:
-    Input: ["eat","tea","tan","ate","nat","bat"]
-    Output: [["eat","tea","ate"],["tan","nat"],["bat"]]
-"""
+    Input: strs = ["eat","tea","tan","ate","nat","bat"]
+    Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
 
-from typing import List, Dict
+Explanation:
+    There is no string in strs that can be rearranged to form "bat".
+    The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+    The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
 
+Complexity:
+    Time: O(N * L log L) where N=len(strs) and L is the average word length
+    (sorting each word dominates).
+    Space: O(N * L) for the output and keys."""
 
-def group_anagrams(strs: List[str]) -> List[List[str]]:
-    """Group a list of strings into anagram groups.
+strs = ["eat","tea","tan","ate","nat","bat"]    
 
-    Approach:
-    - Use a dictionary (`groups`) mapping a normalized key -> list of words.
-    - The normalization is: sort the characters of the word and join them.
-      All anagrams produce the same sorted string (the key).
-    - Append each word to the list for its key.
+def groupAnagrams(strs):
+        # Dictionary to collect groups: key (sorted letters) -> list of words
+        groups={}
 
-    Time complexity: O(N * L log L) where N is number of words and L is average
-    length of a word (sorting each word costs L log L).
-    Space complexity: O(N * L) to store the grouped words and keys.
-    """
+        # Process each word and place it into the appropriate anagram bucket
+        for word in strs:
+            # Create the canonical key by sorting the letters of the word
+            x = "".join(sorted(word))
 
-    groups: Dict[str, List[str]] = {}
+            # If the key already exists, append the original word to that list
+            if x in groups:
+                groups[x].append(word)
+            else:
+                # Otherwise, start a new list for this key
+                groups[x]=[word]
 
-    # Iterate through each word and group by the sorted-letter key
-    for word in strs:
-        # Normalize the word by sorting its characters
-        key = "".join(sorted(word))
+        # Return only the grouped anagram lists (values of the dictionary)
+        return list(groups.values())
 
-        # Add the word to the correct anagram bucket
-        if key in groups:
-            groups[key].append(word)
-        else:
-            groups[key] = [word]
-
-    # We only need the lists of grouped anagrams as the final result
-    return list(groups.values())
-
-
-if __name__ == "__main__":
-    # Example usage for study / quick manual testing
-    sample = ["eat", "tea", "tan", "ate", "nat", "bat"]
-
-    # Call the function and print grouped anagrams
-    result = group_anagrams(sample)
-    print("Input:", sample)
-    print("Grouped anagrams:", result)
+print(groupAnagrams(strs))
